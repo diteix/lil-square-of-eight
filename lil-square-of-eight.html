@@ -1,26 +1,29 @@
 <html>
-	<header>
+	<head>
 		<link href="css/style.css" rel="stylesheet" type="text/css" />
-	</header>
+	</head>
 	<body>
-		<svg id="svg" width="700" height="700" >
-		</svg>
-		<div id="score">
-			<div id="p1" class="activePlayer">
-				<span id="p1score">
-					0
-				</span>
-				Player 1
+		<div id="infoBox">
+			<div id="score">
+				<div id="p1" class="activePlayer">
+					<span id="p1score">
+						0
+					</span>
+					Player 1
+				</div>
+				<div id="p2">
+					<span id="p2score">
+						0
+					</span>
+					Player 2
+				</div>
 			</div>
-			<div id="p2">
-				<span id="p2score">
-					0
-				</span>
-				Player 2
+			<div>
+				<input type="button" value="Restart" onclick="restartMatch()" />
 			</div>
 		</div>
-	</body>
-	<footer>
+		<svg id="svg" width="700" height="700" >
+		</svg>
 		<script src="js/script.js" type="text/javascript"></script>
-	</footer>
+	</body>
 </html>
