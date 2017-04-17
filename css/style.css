@@ -1,0 +1,8 @@
+line { cursor: pointer; }
+.clicked { pointer-events : none; }
+#score { float: left; margin-right: 100px; }
+#score div { opacity: 0.5; }
+#score div.activePlayer { opacity: 1; font-weight: bold; }
+#score span { width: 50px; display: inline-block; color: white; font-size: 35px; text-align: center; }
+#p1score { background-color: blue; }
+#p2score { background-color: red; }
