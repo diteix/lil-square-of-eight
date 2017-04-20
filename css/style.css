@@ -1,7 +1,8 @@
 line { cursor: pointer; }
 .clicked { pointer-events : none; }
-#infoBox { float: left; margin-right: 100px; }
-#infoBox * { display: list-item; }
+#infoBox { display: inline-block; margin-right: 100px; width: 155px; float: left; }
+#infoBox * { margin: 3px 0 3px; vertical-align: middle; }
+#gameBox { display: inline-block; float: left; }
 #score div { opacity: 0.5; }
 #score div.activePlayer { opacity: 1; font-weight: bold; }
 #score span { width: 50px; display: inline-block; color: white; font-size: 35px; text-align: center; }
