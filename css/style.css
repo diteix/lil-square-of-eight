@@ -1,10 +1,11 @@
+#gameContainer { text-align: center; }
+#scoreContainer { display: inline-block; }
+#scoreContainer * { vertical-align: middle; padding: 5px 10px; }
+#scoreContainer div { opacity: 0.5; display: initial; }
+#scoreContainer div.activePlayer { opacity: 1; font-weight: bold; }
+#scoreContainer div span { width: 50px; display: inline-block; color: white; font-size: 35px; font-weight: bold; }
+#pOneScore { background-color: blue; }
+#pTwoScore { background-color: red; }
+#boardContainer { margin: 35px 0 0; }
 line { cursor: pointer; }
 .clicked { pointer-events : none; }
-#infoBox { display: inline-block; margin-right: 100px; width: 155px; float: left; }
-#infoBox * { margin: 3px 0 3px; vertical-align: middle; }
-#gameBox { display: inline-block; float: left; }
-#score div { opacity: 0.5; }
-#score div.activePlayer { opacity: 1; font-weight: bold; }
-#score span { width: 50px; display: inline-block; color: white; font-size: 35px; text-align: center; }
-#p1score { background-color: blue; }
-#p2score { background-color: red; }
