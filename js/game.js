@@ -1,9 +1,9 @@
 window.LilSquareOfEight = (function LilSquareOfEight() {
-	var boardLengthDefault = 700;
+	var boardLengthDefault = 600;
 	var matrixSizeDefault = 10;
 
 	var dotRadiusDefault = 3;
-	var lineWidthDefault = 4;
+	var lineWidthDefault = 3;
 	
 	var boardProperties = {
 		svg: null,
@@ -37,14 +37,14 @@ window.LilSquareOfEight = (function LilSquareOfEight() {
 
 				return parseInt((boardProperties.svg.width.baseVal.value - (2 * dotRadius * (boardProperties.matrixSize + 1))) / boardProperties.matrixSize);
 			},
-			createLine: function (lineIndex, elementsPerLineCount, svgLineLength, dotRadius, initialPosition, matrixSizeRatio, lineWidth) {
+			createLine: function(lineIndex, elementsPerLineCount, svgLineLength, dotRadius, initialPosition, lineWidth) {
 				for (var i = 0; i < elementsPerLineCount; i++) {
-					var newElement = this.createLineElement(lineIndex, i, svgLineLength, dotRadius, initialPosition, matrixSizeRatio, lineWidth);
-					boardProperties.elementsMatrix[lineIndex][i] = newElement;
+					var newElement = this.createLineElement(lineIndex, i, svgLineLength, dotRadius, initialPosition, lineWidth);
+					boardProperties.elementsMatrix[lineIndex][i] = { element: newElement, selected: false };
 					boardProperties.svg.appendChild(newElement);
 				}
 			},
-			createLineElement: function (lineIndex, elementIndex, svgLineLength, dotRadius, initialPosition, matrixSizeRatio, lineWidth) {
+			createLineElement: function(lineIndex, elementIndex, svgLineLength, dotRadius, initialPosition, lineWidth) {
 				var element = new Object();
 				var isLineEven = lineIndex % 2 == 0;
 				var isElementEven = elementIndex % 2 == 0;
@@ -55,55 +55,139 @@ window.LilSquareOfEight = (function LilSquareOfEight() {
 					element.setAttribute('cx', initialPosition.x + (2 * dotRadius * (elementIndex) / 2) + (svgLineLength * (elementIndex) / 2));
 					element.setAttribute('cy', initialPosition.y + (2 * dotRadius * (lineIndex) / 2) + (svgLineLength * (lineIndex) / 2));
 					element.setAttribute('r', dotRadius);
-					element.setAttribute('stroke', 'black');
-					element.setAttribute('stroke-width', '1');
 					element.setAttribute('fill', 'black');
-				} else if(isLineEven && !isElementEven) {
-					var x = (2 * dotRadius * (elementIndex + 1) / 2)  + (svgLineLength * (elementIndex - 1) / 2) + 1.5;
-					var y = initialPosition.y + (2 * dotRadius * (lineIndex) / 2) + (svgLineLength * (lineIndex) / 2);
+				} else if (isLineEven && !isElementEven) {
+					var x = (dotRadius * (elementIndex + 1))  + (svgLineLength * (elementIndex - 1) / 2);
+					var y = (dotRadius * lineIndex) + (svgLineLength * (lineIndex) / 2);
 
-					element = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+					element = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
 					element.setAttribute('id', lineIndex  + ':' +  elementIndex);
-					element.setAttribute('x1', x);
-					element.setAttribute('y1', y);
-					element.setAttribute('x2', x + svgLineLength);
-					element.setAttribute('y2', y);
-					element.setAttribute('stroke', 'white');
-					element.setAttribute('stroke-width', lineWidth);
+					element.setAttribute('x', x);
+					element.setAttribute('y', y - lineWidth);
+					element.setAttribute('width', svgLineLength);
+					element.setAttribute('height', lineWidth * 3);
+					element.setAttribute('fill', 'white');
+					element.className.baseVal += "line";
 					
 					element.onclick = this.lineClick;
 				} else if (!isLineEven && isElementEven) {
-					var x = initialPosition.x + (2 * dotRadius * (elementIndex) / 2) + (svgLineLength * (elementIndex) / 2);
-					var y = (2 * dotRadius * (lineIndex + 1) / 2)  + (svgLineLength * (lineIndex - 1) / 2) + 1.5;
+					var x = (dotRadius * elementIndex) + (svgLineLength * (elementIndex) / 2);
+					var y = (dotRadius * (lineIndex + 1))  + (svgLineLength * (lineIndex - 1) / 2);
 
-					element = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+					element = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
 					element.setAttribute('id', lineIndex  + ':' +  elementIndex);
-					element.setAttribute('x1', x);
-					element.setAttribute('y1', y);
-					element.setAttribute('x2', x);
-					element.setAttribute('y2', y + svgLineLength);
-					element.setAttribute('stroke', 'white');
-					element.setAttribute('stroke-width', lineWidth);
+					element.setAttribute('x', x - lineWidth);
+					element.setAttribute('y', y);
+					element.setAttribute('width', lineWidth * 3);
+					element.setAttribute('height', svgLineLength);
+					element.setAttribute('fill', 'white');
+					element.className.baseVal += "line";
 					
 					element.onclick = this.lineClick;
 				} else if (!isLineEven && !isElementEven) {
 					element = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
 					element.setAttribute('id', lineIndex  + ':' +  elementIndex);
-					element.setAttribute('x', (2 * dotRadius * (elementIndex + 1) / 2)  + (svgLineLength * (elementIndex - 1) / 2) + 1);
-					element.setAttribute('y', (2 * dotRadius * (lineIndex + 1) / 2)  + (svgLineLength * (lineIndex - 1) / 2) + 1);
-					element.setAttribute('width', svgLineLength);
-					element.setAttribute('height', svgLineLength);
+					element.setAttribute('x', (dotRadius * (elementIndex + 1))  + (svgLineLength * (elementIndex - 1) / 2) + parseInt(lineWidth / 2));
+					element.setAttribute('y', (dotRadius * (lineIndex + 1))  + (svgLineLength * (lineIndex - 1) / 2) + parseInt(lineWidth / 2));
 					element.setAttribute('fill', 'white');
 				}
 				
 				return element;
 			},
-			lineClick: function () {
+			lineClick: function() {
 				var splitId = this.id.split(':');
 				var lineIndex = parseInt(splitId[0]);
 				var elementIndex = parseInt(splitId[1]);
+				var dotRadius = boardProperties.fn.dotRadius();
+				var lineWidth = 2 * dotRadius;
+				var svgLineLength = boardProperties.fn.svgLineLength(dotRadius);
 				
-				scoreProperties.fn.resolveTurn({ lineIndex: lineIndex, elementIndex: elementIndex, player: scoreProperties.currentPlayer });
+				var that = boardProperties.elementsMatrix[lineIndex][elementIndex];
+				
+				if (lineIndex % 2 == 0) {
+					that.element.setAttribute('y', (dotRadius * lineIndex) + (svgLineLength * (lineIndex) / 2));
+					that.element.setAttribute('height', lineWidth);
+				} else {
+					that.element.setAttribute('x', (dotRadius * elementIndex) + (svgLineLength * (elementIndex) / 2));
+					that.element.setAttribute('width', lineWidth);
+				}
+				
+				that.element.setAttribute('fill', scoreProperties.currentPlayer.color);
+				that.element.className.baseVal += "clicked"
+				that.selected = true;
+				
+				var changePlayer = true;
+				var rectArray = [];
+				
+				if (lineIndex % 2 == 0) {
+					var lineUpLeft, lineUp, lineUpRight, lineDownLeft, lineDown, lineDownRight;
+					
+					if (lineIndex > 0) {
+						lineUpLeft = boardProperties.elementsMatrix[lineIndex - 1][elementIndex - 1];
+						lineUp = boardProperties.elementsMatrix[lineIndex - 2][elementIndex];
+						lineUpRight = boardProperties.elementsMatrix[lineIndex - 1][elementIndex + 1];
+					}
+					
+					if (lineIndex < boardProperties.elementsMatrix.length - 1) {
+						lineDownLeft = boardProperties.elementsMatrix[lineIndex + 1][elementIndex - 1];
+						lineDown = boardProperties.elementsMatrix[lineIndex + 2][elementIndex];
+						lineDownRight = boardProperties.elementsMatrix[lineIndex + 1][elementIndex + 1];
+					}
+					
+					if (lineUpLeft && lineUpLeft.selected &&
+					lineUp && lineUp.selected &&
+					lineUpRight && lineUpRight.selected) {
+						changePlayer = false;
+						rectArray.push(boardProperties.elementsMatrix[lineIndex - 1][elementIndex]);
+					}
+					
+					if (lineDownLeft && lineDownLeft.selected &&
+					lineDown && lineDown.selected &&
+					lineDownRight && lineDownRight.selected) {
+						changePlayer = false;
+						rectArray.push(boardProperties.elementsMatrix[lineIndex + 1][elementIndex]);
+					}
+				} else {
+					var lineUpLeft, lineLeft, lineDownLeft, lineUpRight, lineRight, lineDownRight;
+					
+					if (elementIndex > 0) {
+						lineUpLeft = boardProperties.elementsMatrix[lineIndex - 1][elementIndex - 1];
+						lineLeft = boardProperties.elementsMatrix[lineIndex][elementIndex - 2];
+						lineDownLeft = boardProperties.elementsMatrix[lineIndex + 1][elementIndex - 1];
+					}
+	
+					if (elementIndex < boardProperties.elementsMatrix[lineIndex].length - 1) {
+						lineUpRight = boardProperties.elementsMatrix[lineIndex - 1][elementIndex + 1];
+						lineRight = boardProperties.elementsMatrix[lineIndex][elementIndex + 2];
+						lineDownRight = boardProperties.elementsMatrix[lineIndex + 1][elementIndex + 1];
+					}
+					
+					if (lineUpLeft && lineUpLeft.selected &&
+					lineLeft && lineLeft.selected &&
+					lineDownLeft && lineDownLeft.selected) {
+						changePlayer = false;
+						rectArray.push(boardProperties.elementsMatrix[lineIndex][elementIndex - 1]);
+					}
+					
+					if (lineUpRight && lineUpRight.selected &&
+					lineRight && lineRight.selected &&
+					lineDownRight && lineDownRight.selected) {
+						changePlayer = false;
+						rectArray.push(boardProperties.elementsMatrix[lineIndex][elementIndex + 1]);
+					}
+				}
+
+				if (changePlayer) {
+					scoreProperties.fn.changePlayerTurn();
+				} else {
+					rectArray.forEach(function(rect) {
+						scoreProperties.fn.addScore();
+						rect.element.setAttribute('fill', scoreProperties.currentPlayer.color);
+						rect.element.setAttribute('width', svgLineLength - lineWidth);
+						rect.element.setAttribute('height', svgLineLength - lineWidth);
+						rect.selected = true;
+					}, this);
+				}
 			},
 			create2DArray: function (rows) {
 				var arr = [];
@@ -125,12 +209,11 @@ window.LilSquareOfEight = (function LilSquareOfEight() {
 				boardProperties.elementsMatrix = this.create2DArray(elementsPerLineCount);
 				var dotRadius = this.dotRadius();
 				var svgLineLength = this.svgLineLength(dotRadius);
-				var initialPosition = { x : dotRadius + 1, y : dotRadius + 1 };
-				var matrixSizeRatio = parseInt(matrixSizeDefault / boardProperties.matrixSize);
-				var lineWidth = matrixSizeRatio * lineWidthDefault;
+				var initialPosition = { x : dotRadius, y : dotRadius };
+				var lineWidth = 2 * dotRadius;
 				
 				for (var i = 0; i < elementsPerLineCount; i++) {
-					this.createLine(i, elementsPerLineCount, svgLineLength, dotRadius, initialPosition, matrixSizeRatio, lineWidth);
+					this.createLine(i, elementsPerLineCount, svgLineLength, dotRadius, initialPosition, lineWidth);
 				}
 	
 				var boardContainer = document.createElement('div');
@@ -150,88 +233,6 @@ window.LilSquareOfEight = (function LilSquareOfEight() {
 		playerTwo: null,
 		currentPlayer: null,
 		fn: {
-			resolveTurn: function(turnInfo) {
-				this.doPlayerTurn(turnInfo);
-				//sendMessage(turnInfo);
-			},
-			doPlayerTurn: function(turnInfo) {
-				var that = boardProperties.elementsMatrix[turnInfo.lineIndex][turnInfo.elementIndex]
-				that.setAttribute('stroke', turnInfo.player.color);
-				that.className.baseVal += "clicked"
-				
-				var changePlayer = true;
-				
-				if (turnInfo.lineIndex % 2 == 0) {
-					var lineUpLeft, lineUp, lineUpRight, lineDownLeft, lineDown, lineDownRight;
-					
-					if (turnInfo.lineIndex > 0) {
-						lineUpLeft = boardProperties.elementsMatrix[turnInfo.lineIndex - 1][turnInfo.elementIndex - 1];
-						lineUp = boardProperties.elementsMatrix[turnInfo.lineIndex - 2][turnInfo.elementIndex];
-						lineUpRight = boardProperties.elementsMatrix[turnInfo.lineIndex - 1][turnInfo.elementIndex + 1];
-					}
-					
-					if (turnInfo.lineIndex < boardProperties.elementsMatrix.length - 1) {
-						lineDownLeft = boardProperties.elementsMatrix[turnInfo.lineIndex + 1][turnInfo.elementIndex - 1];
-						lineDown = boardProperties.elementsMatrix[turnInfo.lineIndex + 2][turnInfo.elementIndex];
-						lineDownRight = boardProperties.elementsMatrix[turnInfo.lineIndex + 1][turnInfo.elementIndex + 1];
-					}
-					
-					if (lineUpLeft && lineUpLeft.getAttribute('stroke') != 'white' &&
-					lineUp && lineUp.getAttribute('stroke') != 'white' &&
-					lineUpRight && lineUpRight.getAttribute('stroke') != 'white') {
-						changePlayer = false;
-						this.addScore(turnInfo.player);
-						boardProperties.elementsMatrix[turnInfo.lineIndex - 1][turnInfo.elementIndex].setAttribute('fill', turnInfo.player.color);
-					}
-					
-					if (lineDownLeft && lineDownLeft.getAttribute('stroke') != 'white' &&
-					lineDown && lineDown.getAttribute('stroke') != 'white' &&
-					lineDownRight && lineDownRight.getAttribute('stroke') != 'white') {
-						changePlayer = false;
-						this.addScore(turnInfo.player);
-						boardProperties.elementsMatrix[turnInfo.lineIndex + 1][turnInfo.elementIndex].setAttribute('fill', turnInfo.player.color);
-					}
-					
-				} else {
-					var lineUpLeft, lineLeft, lineDownLeft, lineUpRight, lineRight, lineDownRight;
-					
-					if (turnInfo.elementIndex > 0) {
-						lineUpLeft = boardProperties.elementsMatrix[turnInfo.lineIndex - 1][turnInfo.elementIndex - 1];
-						lineLeft = boardProperties.elementsMatrix[turnInfo.lineIndex][turnInfo.elementIndex - 2];
-						lineDownLeft = boardProperties.elementsMatrix[turnInfo.lineIndex + 1][turnInfo.elementIndex - 1];
-					}
-	
-					if (turnInfo.elementIndex < boardProperties.elementsMatrix[turnInfo.lineIndex].length - 1) {
-						lineUpRight = boardProperties.elementsMatrix[turnInfo.lineIndex - 1][turnInfo.elementIndex + 1];
-						lineRight = boardProperties.elementsMatrix[turnInfo.lineIndex][turnInfo.elementIndex + 2];
-						lineDownRight = boardProperties.elementsMatrix[turnInfo.lineIndex + 1][turnInfo.elementIndex + 1];
-					}
-					
-					if (lineUpLeft && lineUpLeft.getAttribute('stroke') != 'white' &&
-					lineLeft && lineLeft.getAttribute('stroke') != 'white' &&
-					lineDownLeft && lineDownLeft.getAttribute('stroke') != 'white') {
-						changePlayer = false;
-						this.addScore(turnInfo.player);
-						boardProperties.elementsMatrix[turnInfo.lineIndex][turnInfo.elementIndex - 1].setAttribute('fill', turnInfo.player.color);
-					}
-					
-					if (lineUpRight && lineUpRight.getAttribute('stroke') != 'white' &&
-					lineRight && lineRight.getAttribute('stroke') != 'white' &&
-					lineDownRight && lineDownRight.getAttribute('stroke') != 'white') {
-						changePlayer = false;
-						this.addScore(turnInfo.player);
-						boardProperties.elementsMatrix[turnInfo.lineIndex][turnInfo.elementIndex + 1].setAttribute('fill', turnInfo.player.color);
-					}
-				}
-				
-				turnInfo.changePlayer = changePlayer;
-		
-				if (changePlayer) {
-					this.changePlayerTurn();
-				}
-				
-				return changePlayer;
-			},
 			changePlayerTurn: function() {
 				//if (!currentConnection) {
 					scoreProperties.currentPlayer = scoreProperties.currentPlayer == scoreProperties.playerOne ? scoreProperties.playerTwo : scoreProperties.playerOne;
@@ -241,12 +242,8 @@ window.LilSquareOfEight = (function LilSquareOfEight() {
 					//svg.classList.toggle('clicked');
 				//}
 			},
-			addScore: function(player) {
-				if (player == scoreProperties.currentPlayer) {
-					player.score++;
-				}
-				
-				player.scoreElement.innerText = player.score;
+			addScore: function() {
+				scoreProperties.currentPlayer.scoreElement.innerText = ++scoreProperties.currentPlayer.score;
 			},
 			initialize: function(playerOneConfig, playerTwoConfig) {
 				scoreProperties.playerOne = playerOneDefault;
@@ -383,7 +380,7 @@ window.LilSquareOfEight = (function LilSquareOfEight() {
 			document.body.appendChild(this.gameContainer);
 
 			var st = document.createElement('style');
-			st.innerText = '#gameContainer{text-align:center}#scoreContainer{display:inline-block}#scoreContainer *{vertical-align:middle;padding:5px 10px}#scoreContainer div{opacity:.5;display:initial}#scoreContainer div.activePlayer{opacity:1;font-weight:700}#scoreContainer div span{width:50px;display:inline-block;color:#fff;font-size:35px;font-weight:700}#pOneScore{background-color:' + scoreProperties.playerOne.color + '}#pTwoScore{background-color:' + scoreProperties.playerTwo.color + '}#boardContainer{margin:35px 0 0}line{cursor:pointer}.clicked{pointer-events:none}';
+			st.innerText = '#gameContainer{text-align:center}#scoreContainer{display:inline-block}#scoreContainer *{vertical-align:middle;padding:5px 10px}#scoreContainer div{opacity:.5;display:initial}#scoreContainer div.activePlayer{opacity:1;font-weight:700}#scoreContainer div span{width:50px;display:inline-block;color:#fff;font-size:35px;font-weight:700}#pOneScore{background-color:' + scoreProperties.playerOne.color + '}#pTwoScore{background-color:' + scoreProperties.playerTwo.color + '}#boardContainer{margin:35px 0 0}.line{cursor:pointer}.clicked{pointer-events:none}';
 
 			document.head.appendChild(st);
 		},
