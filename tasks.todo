@@ -6,8 +6,11 @@ Lil-Square-Of-Eight:
     ✔ Melhorar geração de html do tabuleiro e placar @done (2017-10-26 14:23:39)
     ✔ Alterar placar conforme sugestão @done (2017-10-26 14:23:46)
     ✔ Incluir customização de nome de jogador e cor @done (2017-10-27 10:54:07)
-    ☐ Incluir customização de jogo
-    ☐ Ajustar css para diferentes customizações de jogo
+    ✔ Incluir customização de jogo @done (2017-11-2 10:21:54)
+    ✔ Ajustar css para diferentes customizações de jogo @done (2017-11-2 10:22:01)
+    ☐ Aumentar a área de clique das linhas
+    ☐ Ajustar proporção do placar
+    ☐ Funcionamento em mobile
     ☐ Ajustar código script para não depender do websocket
     P2P Module:
         ☐ Implementar acoplação do script de websocket
