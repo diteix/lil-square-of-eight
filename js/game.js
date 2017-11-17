@@ -6,6 +6,7 @@ window.LilSquareOfEight = (function LilSquareOfEight() {
 	var lineWidthDefault = 3;
 	
 	var boardProperties = {
+		boardContainer: null,
 		svg: null,
 		matrixSize: matrixSizeDefault,
 		boardLength: boardLengthDefault,
@@ -112,8 +113,8 @@ window.LilSquareOfEight = (function LilSquareOfEight() {
 					that.element.setAttribute('width', lineWidth);
 				}
 				
-				that.element.setAttribute('fill', scoreProperties.currentPlayer.color);
-				that.element.className.baseVal += "clicked"
+				that.element.setAttribute('fill', scoreProperties.currentPlayer.configurableProperties.color);
+				that.element.onclick = null;
 				that.selected = true;
 				
 				var changePlayer = true;
@@ -182,7 +183,7 @@ window.LilSquareOfEight = (function LilSquareOfEight() {
 				} else {
 					rectArray.forEach(function(rect) {
 						scoreProperties.fn.addScore();
-						rect.element.setAttribute('fill', scoreProperties.currentPlayer.color);
+						rect.element.setAttribute('fill', scoreProperties.currentPlayer.configurableProperties.color);
 						rect.element.setAttribute('width', svgLineLength - lineWidth);
 						rect.element.setAttribute('height', svgLineLength - lineWidth);
 						rect.selected = true;
@@ -199,6 +200,10 @@ window.LilSquareOfEight = (function LilSquareOfEight() {
 				return arr;
 			},
 			initialize: function() {
+				if (boardProperties.boardContainer) {
+					this.reinitialize();
+				}
+
 				boardProperties.svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
 				boardProperties.svg.id = 'svg';
 
@@ -216,21 +221,41 @@ window.LilSquareOfEight = (function LilSquareOfEight() {
 					this.createLine(i, elementsPerLineCount, svgLineLength, dotRadius, initialPosition, lineWidth);
 				}
 	
-				var boardContainer = document.createElement('div');
-				boardContainer.id = 'boardContainer';
-				boardContainer.appendChild(boardProperties.svg);
+				boardProperties.boardContainer = document.createElement('div');
+				boardProperties.boardContainer.id = 'boardContainer';
+				boardProperties.boardContainer.appendChild(boardProperties.svg);
+			},
+			reinitialize: function() {
+				if (!boardProperties.boardContainer) {
+					this.initialize();
+				}
+
+				boardProperties.svg.innerHTML = '';
+				boardProperties.svg.setAttribute("height", boardProperties.boardLength);
+				boardProperties.svg.setAttribute("width", boardProperties.boardLength);
 	
-				return boardContainer;
+				var elementsPerLineCount = this.elementsPerLineCount();
+				boardProperties.elementsMatrix = this.create2DArray(elementsPerLineCount);
+				var dotRadius = this.dotRadius();
+				var svgLineLength = this.svgLineLength(dotRadius);
+				var initialPosition = { x : dotRadius, y : dotRadius };
+				var lineWidth = 2 * dotRadius;
+				
+				for (var i = 0; i < elementsPerLineCount; i++) {
+					this.createLine(i, elementsPerLineCount, svgLineLength, dotRadius, initialPosition, lineWidth);
+				}
 			}
 		}
 	};
 
+	var playerDefault = { element: null, score: 0, scoreElement: null, nameElement: null  };
 	var playerOneDefault = { name: 'Player 1', color: 'blue' };
 	var playerTwoDefault = { name: 'Player 2', color: 'red' };
 
 	var scoreProperties = {
-		playerOne: null,
-		playerTwo: null,
+		scoreContainer: null,
+		playerOne: Object.assign({ configurableProperties: Object.assign({}, playerOneDefault) }, playerDefault),
+		playerTwo: Object.assign({ configurableProperties: Object.assign({}, playerTwoDefault) }, playerDefault),
 		currentPlayer: null,
 		fn: {
 			changePlayerTurn: function() {
@@ -245,38 +270,15 @@ window.LilSquareOfEight = (function LilSquareOfEight() {
 			addScore: function() {
 				scoreProperties.currentPlayer.scoreElement.innerText = ++scoreProperties.currentPlayer.score;
 			},
-			initialize: function(playerOneConfig, playerTwoConfig) {
-				scoreProperties.playerOne = playerOneDefault;
-				scoreProperties.playerTwo = playerTwoDefault;
+			initialize: function() {
+				if (scoreProperties.scoreContainer) {
+					this.reinitialize();
+				}
 
-				scoreProperties.playerOne.element = scoreProperties.playerTwo.element = null;
-				scoreProperties.playerOne.score = scoreProperties.playerTwo.score = 0;
-				scoreProperties.playerOne.scoreElement = scoreProperties.playerTwo.scoreElement = null;
-	
-				if (playerOneConfig) {
-					if (playerOneConfig.color) {
-						scoreProperties.playerOne.color = playerOneConfig.color;
-					}
-					
-					if (playerOneConfig.name) {
-						scoreProperties.playerOne.name = playerOneConfig.name;
-					}
-				}
-	
-				if (playerTwoConfig) {
-					if (playerTwoConfig.color) {
-						scoreProperties.playerTwo.color = playerTwoConfig.color;
-					}
-					
-					if (playerTwoConfig.name) {
-						scoreProperties.playerTwo.name = playerTwoConfig.name;
-					}
-				}
-	
 				scoreProperties.currentPlayer = scoreProperties.playerOne;
 	
-				var playerOneNameBox = document.createElement('label');
-				playerOneNameBox.textContent = scoreProperties.playerOne.name;
+				scoreProperties.playerOne.nameElement = document.createElement('label');
+				scoreProperties.playerOne.nameElement.textContent = scoreProperties.playerOne.configurableProperties.name;
 	
 				scoreProperties.playerOne.scoreElement = document.createElement('span');
 				scoreProperties.playerOne.scoreElement.textContent = scoreProperties.playerOne.score;
@@ -285,7 +287,7 @@ window.LilSquareOfEight = (function LilSquareOfEight() {
 				scoreProperties.playerOne.element = document.createElement('div');
 				scoreProperties.playerOne.element.id = 'pOne';
 				scoreProperties.playerOne.element.classList.add('activePlayer');
-				scoreProperties.playerOne.element.appendChild(playerOneNameBox);
+				scoreProperties.playerOne.element.appendChild(scoreProperties.playerOne.nameElement);
 				scoreProperties.playerOne.element.appendChild(scoreProperties.playerOne.scoreElement);
 	
 				var versusBox = document.createElement('span');
@@ -295,22 +297,145 @@ window.LilSquareOfEight = (function LilSquareOfEight() {
 				scoreProperties.playerTwo.scoreElement.textContent = scoreProperties.playerTwo.score;
 				scoreProperties.playerTwo.scoreElement.id = 'pTwoScore';
 	
-				var playerTwoNameBox = document.createElement('label');
-				playerTwoNameBox.textContent = scoreProperties.playerTwo.name;
+				scoreProperties.playerTwo.nameElement = document.createElement('label');
+				scoreProperties.playerTwo.nameElement.textContent = scoreProperties.playerTwo.configurableProperties.name;
 				
 				scoreProperties.playerTwo.element = document.createElement('div');
 				scoreProperties.playerTwo.element.id = 'pTwo';
 				scoreProperties.playerTwo.element.appendChild(scoreProperties.playerTwo.scoreElement);
-				scoreProperties.playerTwo.element.appendChild(playerTwoNameBox);
+				scoreProperties.playerTwo.element.appendChild(scoreProperties.playerTwo.nameElement);
 	
-				var scoreContainer = document.createElement('div');
-				scoreContainer.id = 'scoreContainer';
+				scoreProperties.scoreContainer = document.createElement('div');
+				scoreProperties.scoreContainer.id = 'scoreContainer';
 	
-				scoreContainer.appendChild(scoreProperties.playerOne.element);
-				scoreContainer.appendChild(versusBox);
-				scoreContainer.appendChild(scoreProperties.playerTwo.element);
+				scoreProperties.scoreContainer.appendChild(scoreProperties.playerOne.element);
+				scoreProperties.scoreContainer.appendChild(versusBox);
+				scoreProperties.scoreContainer.appendChild(scoreProperties.playerTwo.element);
+			},
+			reinitialize: function() {
+				if (!scoreProperties.scoreContainer) {
+					this.initialize();
+				}
+				scoreProperties.playerOne.score = scoreProperties.playerTwo.score = 0;
 	
-				return scoreContainer;
+				scoreProperties.currentPlayer = scoreProperties.playerOne;
+	
+				scoreProperties.playerOne.nameElement.textContent = scoreProperties.playerOne.configurableProperties.name;
+				scoreProperties.playerOne.scoreElement.textContent = scoreProperties.playerOne.score;
+				scoreProperties.playerOne.element.classList.add('activePlayer');
+				
+				scoreProperties.playerTwo.nameElement.textContent = scoreProperties.playerTwo.configurableProperties.name;
+				scoreProperties.playerTwo.scoreElement.textContent = scoreProperties.playerTwo.score;
+				scoreProperties.playerTwo.element.classList.remove('activePlayer');
+			}
+		}
+	};
+
+	var styleDefault = {
+		"#gameContainer": {
+			"text-align": "center"
+		},
+		"#scoreContainer": {
+			"display": "inline-block"
+		},
+		"#scoreContainer *": {
+			"vertical-align": "middle",
+			"padding": "5px 10px"
+		},
+		"#scoreContainer div": {
+			"opacity": "0.5",
+			"display": "initial"
+		},
+		"#scoreContainer div.activePlayer": {
+			"opacity": "1", 
+			"font-weight": "bold"
+		},
+		"#scoreContainer div span": {
+			"width": "50px",
+			"display": "inline-block",
+			"color": "white",
+			"font-size": "35px",
+			"font-weight": "bold"
+		},
+		"#boardContainer": {
+			"margin": "35px 0 0"
+		},
+		".line": {
+			"cursor": "pointer"
+		}
+	};
+
+	var styleProperties = {
+		styleContainer: null,
+		map: {},
+		sheet: null,
+		rules: null,
+		fn: {
+			configurableStyle: function() { 
+				return {
+					"#pOneScore": {
+						"background-color": scoreProperties.playerOne.configurableProperties.color
+					},
+					"#pTwoScore": {
+						"background-color": scoreProperties.playerTwo.configurableProperties.color
+					},
+				}
+			},
+			setRule: function(selector, property, value) {
+				// Convert property from camelCase to snake-case
+				property = property.replace(/([A-Z])/g, function ($1) {
+				  	return "-" + $1.toLowerCase();
+				});
+
+				if (!styleProperties.map.hasOwnProperty(selector)) {
+					// If the selector hasn't been used yet we want to insert the rule at the end of the CSSRuleList, so we use its length as the index value
+					var index = styleProperties.rules.length;
+					// Prepare the rule declaration text, since both insertRule and addRule take this format
+					var declaration = property + ": " + value;
+					// Insert the new rule into the stylesheet
+					try {
+						// Some browsers only support insertRule, others only support addRule, so we have to use both
+						styleProperties.sheet.insertRule(selector + " {" + declaration + ";}", index);
+					} catch (e) {
+						styleProperties.sheet.addRule(selector, declaration, index);
+					} finally {
+						// Because safari is perhaps the worst browser in all of history, we have to remind it to keep the sheet rules up-to-date
+						styleProperties.rules = styleProperties.sheet.rules || styleProperties.sheet.cssRules;
+						// Add our newly inserted rule's CSSStyleDeclaration object to the internal map
+						styleProperties.map[selector] = styleProperties.rules[index].style;
+					}
+				} else {
+					styleProperties.map[selector].setProperty(property, value);
+				}
+			},
+			applyRules: function(rulesToApply) {
+				for (var selector in rulesToApply) {
+					for (var prop in rulesToApply[selector]) {
+					  	this.setRule(selector, prop, rulesToApply[selector][prop]);
+					}
+				}
+			},
+			initialize: function() {
+				if (styleProperties.styleContainer) {
+					this.reinitialize();
+				}
+				 
+				styleProperties.styleContainer = document.createElement("style");
+				document.head.appendChild(styleProperties.styleContainer);
+				 
+				styleProperties.styleContainer.appendChild(document.createTextNode(""));
+				styleProperties.sheet = styleProperties.styleContainer.sheet;
+				styleProperties.rules = styleProperties.sheet.rules || styleProperties.sheet.cssRules;
+				 
+				this.applyRules(styleDefault);
+				this.applyRules(this.configurableStyle());
+			},
+			reinitialize: function() {
+				if (!styleProperties.styleContainer) {
+					this.initialize();
+				}
+
+				this.applyRules(this.configurableStyle());
 			}
 		}
 	};
@@ -354,11 +479,13 @@ window.LilSquareOfEight = (function LilSquareOfEight() {
 
 	return {
 		gameContainer: null,
-		playerOne: scoreProperties.playerOne || playerOneDefault,
-		playerTwo: scoreProperties.playerTwo || playerTwoDefault,
+		boardSize: boardProperties.matrixSize,
+		boardLength: boardProperties.boardLength,
+		playerOne: scoreProperties.playerOne.configurableProperties,
+		playerTwo: scoreProperties.playerTwo.configurableProperties,
 		initialize: function(boardSize, boardLength) {
 			if (this.gameContainer) {
-				return this.restartMatch(boardSize, boardLength);
+				return this.reinitialize(boardSize, boardLength);
 			}
 
 			if (boardSize && !isNaN(boardSize)) {
@@ -366,30 +493,43 @@ window.LilSquareOfEight = (function LilSquareOfEight() {
 			}
 
 			if (boardLength && !isNaN(boardLength)) {
-				boardProperties.boardLength = boardLength;
+				boardProperties.boardLength = parseInt(boardLength);
 			}
 			
-			var scoreContainer = scoreProperties.fn.initialize(this.playerOne, this.playerTwo);
-			var boardContainer = boardProperties.fn.initialize();
+			scoreProperties.fn.initialize();
+			boardProperties.fn.initialize();
 
 			this.gameContainer = document.createElement('div');
 			this.gameContainer.id = 'gameContainer';
-			this.gameContainer.appendChild(scoreContainer);
-			this.gameContainer.appendChild(boardContainer);
+			this.gameContainer.appendChild(scoreProperties.scoreContainer);
+			this.gameContainer.appendChild(boardProperties.boardContainer);
 
 			document.body.appendChild(this.gameContainer);
 
-			var st = document.createElement('style');
-			st.innerText = '#gameContainer{text-align:center}#scoreContainer{display:inline-block}#scoreContainer *{vertical-align:middle;padding:5px 10px}#scoreContainer div{opacity:.5;display:initial}#scoreContainer div.activePlayer{opacity:1;font-weight:700}#scoreContainer div span{width:50px;display:inline-block;color:#fff;font-size:35px;font-weight:700}#pOneScore{background-color:' + scoreProperties.playerOne.color + '}#pTwoScore{background-color:' + scoreProperties.playerTwo.color + '}#boardContainer{margin:35px 0 0}.line{cursor:pointer}.clicked{pointer-events:none}';
+			//var st = document.createElement('style');
+			//st.innerText = '#gameContainer{text-align:center}#scoreContainer{display:inline-block}#scoreContainer *{vertical-align:middle;padding:5px 10px}#scoreContainer div{opacity:.5;display:initial}#scoreContainer div.activePlayer{opacity:1;font-weight:700}#scoreContainer div span{width:50px;display:inline-block;color:#fff;font-size:35px;font-weight:700}#pOneScore{background-color:' + scoreProperties.playerOne.color + '}#pTwoScore{background-color:' + scoreProperties.playerTwo.color + '}#boardContainer{margin:35px 0 0}.line{cursor:pointer}.clicked{pointer-events:none}';
 
-			document.head.appendChild(st);
+			//document.head.appendChild(st);
+
+			styleProperties.fn.initialize();
 		},
-		restartMatch: function(boardSize, boardLength) {
-			this.gameContainer.outerHTML = '';
-			this.gameContainer = null;
-			this.initialize(boardSize, boardLength);
+		reinitialize: function(boardSize, boardLength) {
+			if (!this.gameContainer) {
+				return this.initialize(boardSize, boardLength);
+			}
+			
+			if (boardSize && !isNaN(boardSize)) {
+				boardProperties.matrixSize = parseInt(boardSize);
+			}
+
+			if (boardLength && !isNaN(boardLength)) {
+				boardProperties.boardLength = parseInt(boardLength);
+			}
+			
+			scoreProperties.fn.reinitialize();
+			boardProperties.fn.reinitialize();
+
+			styleProperties.fn.reinitialize();
 		}
 	};
 })();
-//LilSquareOfEight.playerOne = { color: 'green', name: 'Diego' };
-LilSquareOfEight.initialize();

@@ -9,8 +9,9 @@ Lil-Square-Of-Eight:
     ✔ Incluir customização de jogo @done (2017-11-2 10:21:54)
     ✔ Ajustar css para diferentes customizações de jogo @done (2017-11-2 10:22:01)
     ✔ Aumentar a área de clique das linhas @done (2017-11-2 15:48:23)
+    ✔ Incluir painel para configuração no demo @done (2017-11-17 19:20:22)
     ☐ Ajustar proporção do placar
-    ☐ Funcionamento em mobile
+    ✔ Funcionamento em mobile @done (2017-11-9 10:30:57)
     ☐ Ajustar código script para não depender do websocket
     P2P Module:
         ☐ Implementar acoplação do script de websocket
