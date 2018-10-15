@@ -25,7 +25,10 @@ window.GreatEight = (function GreatEight() {
                     }
                 }
             },
-            reinitialize: function() {
+            reinitialize: function(boardProperties, scoreProperties) {
+                _boardProperties = boardProperties;
+                _scoreProperties = scoreProperties;
+                
                 notSelectedElements = [];
 
                 for (let lineIndex = 1; lineIndex <= _boardProperties.elementsMatrix.length; lineIndex++) {

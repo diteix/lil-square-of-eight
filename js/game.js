@@ -3,6 +3,8 @@ window.LilSquareOfEight = (function LilSquareOfEight() {
 	var matrixSizeDefault = 10;
 
 	var dotRadiusDefault = 3;
+
+	var useAI = false;
 	
 	var boardProperties = {
 		boardContainer: null,
@@ -189,7 +191,7 @@ window.LilSquareOfEight = (function LilSquareOfEight() {
 				if (!rectArray.length) {
 					scoreProperties.fn.changePlayerTurn();
 
-					if (window.GreatEight && scoreProperties.currentPlayer == scoreProperties.playerTwo) {
+					if (useAI && window.GreatEight && scoreProperties.currentPlayer == scoreProperties.playerTwo) {
 						GreatEight.fn.doTurn({ lineIndex: lineIndex, elementIndex: elementIndex});
 					}
 				} else {
@@ -235,7 +237,7 @@ window.LilSquareOfEight = (function LilSquareOfEight() {
 				boardProperties.boardContainer.id = 'boardContainer';
 				boardProperties.boardContainer.appendChild(boardProperties.svg);
 
-				if (window.GreatEight) {
+				if (useAI && window.GreatEight) {
 					GreatEight.fn.initialize(boardProperties, scoreProperties);
 				}
 			},
@@ -259,8 +261,8 @@ window.LilSquareOfEight = (function LilSquareOfEight() {
 					this.createLine(i, elementsPerLineCount, svgLineLength, dotRadius, initialPosition, lineWidth);
 				}
 
-				if (window.GreatEight) {
-					GreatEight.fn.reinitialize();
+				if (useAI && window.GreatEight) {
+					GreatEight.fn.reinitialize(boardProperties, scoreProperties);
 				}
 			}
 		}
@@ -465,10 +467,12 @@ window.LilSquareOfEight = (function LilSquareOfEight() {
 		boardLength: boardProperties.boardLength,
 		playerOne: scoreProperties.playerOne.configurableProperties,
 		playerTwo: scoreProperties.playerTwo.configurableProperties,
-		initialize: function(boardSize, boardLength) {
+		initialize: function(playWithComputer, boardSize, boardLength) {
 			if (this.gameContainer) {
-				return this.reinitialize(boardSize, boardLength);
+				return this.reinitialize(playWithComputer, boardSize, boardLength);
 			}
+
+			this.useAI = playWithComputer;
 
 			if (boardSize && !isNaN(boardSize)) {
 				boardProperties.matrixSize = parseInt(boardSize);
@@ -490,10 +494,12 @@ window.LilSquareOfEight = (function LilSquareOfEight() {
 
 			styleProperties.fn.initialize();
 		},
-		reinitialize: function(boardSize, boardLength) {
+		reinitialize: function(playWithComputer, boardSize, boardLength) {
 			if (!this.gameContainer) {
-				return this.initialize(boardSize, boardLength);
+				return this.initialize(playWithComputer, boardSize, boardLength);
 			}
+
+			useAI = playWithComputer;
 			
 			if (boardSize && !isNaN(boardSize)) {
 				boardProperties.matrixSize = parseInt(boardSize);
