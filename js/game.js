@@ -3,7 +3,6 @@ window.LilSquareOfEight = (function LilSquareOfEight() {
 	var matrixSizeDefault = 10;
 
 	var dotRadiusDefault = 3;
-	var lineWidthDefault = 3;
 	
 	var boardProperties = {
 		boardContainer: null,
@@ -70,7 +69,7 @@ window.LilSquareOfEight = (function LilSquareOfEight() {
 					element.setAttribute('fill', 'white');
 					element.className.baseVal += "line";
 					
-					element.onclick = this.lineClick;
+					element.onclick = boardProperties.fn.resolveTurn;
 				} else if (!isLineEven && isElementEven) {
 					var x = (dotRadius * elementIndex) + (svgLineLength * (elementIndex) / 2);
 					var y = (dotRadius * (lineIndex + 1))  + (svgLineLength * (lineIndex - 1) / 2);
@@ -84,7 +83,7 @@ window.LilSquareOfEight = (function LilSquareOfEight() {
 					element.setAttribute('fill', 'white');
 					element.className.baseVal += "line";
 					
-					element.onclick = this.lineClick;
+					element.onclick = boardProperties.fn.resolveTurn;
 				} else if (!isLineEven && !isElementEven) {
 					element = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
 					element.setAttribute('id', lineIndex  + ':' +  elementIndex);
@@ -95,16 +94,12 @@ window.LilSquareOfEight = (function LilSquareOfEight() {
 				
 				return element;
 			},
-			lineClick: function() {
-				var splitId = this.id.split(':');
-				var lineIndex = parseInt(splitId[0]);
-				var elementIndex = parseInt(splitId[1]);
+			paintLine: function(lineIndex, elementIndex) {
+				var that = boardProperties.elementsMatrix[lineIndex][elementIndex];
 				var dotRadius = boardProperties.fn.dotRadius();
 				var lineWidth = 2 * dotRadius;
 				var svgLineLength = boardProperties.fn.svgLineLength(dotRadius);
-				
-				var that = boardProperties.elementsMatrix[lineIndex][elementIndex];
-				
+
 				if (lineIndex % 2 == 0) {
 					that.element.setAttribute('y', (dotRadius * lineIndex) + (svgLineLength * (lineIndex) / 2));
 					that.element.setAttribute('height', lineWidth);
@@ -116,9 +111,22 @@ window.LilSquareOfEight = (function LilSquareOfEight() {
 				that.element.setAttribute('fill', scoreProperties.currentPlayer.configurableProperties.color);
 				that.element.onclick = null;
 				that.selected = true;
-				
-				var changePlayer = true;
+				that.element.dispatchEvent(new Event('selected'));
+			},
+			paintRectangle: function(rect, props) {
+				scoreProperties.fn.addScore();
+				rect.element.setAttribute('fill', scoreProperties.currentPlayer.configurableProperties.color);
+				rect.element.setAttribute('width', props.svgLineLength - props.lineWidth);
+				rect.element.setAttribute('height', props.svgLineLength - props.lineWidth);
+				rect.selected = true;
+			},
+			resolveTurn: function() {
+				var splitId = this.id.split(':');
+				var lineIndex = parseInt(splitId[0]);
+				var elementIndex = parseInt(splitId[1]);
 				var rectArray = [];
+
+				boardProperties.fn.paintLine(lineIndex, elementIndex);
 				
 				if (lineIndex % 2 == 0) {
 					var lineUpLeft, lineUp, lineUpRight, lineDownLeft, lineDown, lineDownRight;
@@ -178,19 +186,21 @@ window.LilSquareOfEight = (function LilSquareOfEight() {
 					}
 				}
 
-				if (changePlayer) {
+				if (!rectArray.length) {
 					scoreProperties.fn.changePlayerTurn();
+
+					if (window.GreatEight && scoreProperties.currentPlayer == scoreProperties.playerTwo) {
+						GreatEight.fn.doTurn({ lineIndex: lineIndex, elementIndex: elementIndex});
+					}
 				} else {
-					rectArray.forEach(function(rect) {
-						scoreProperties.fn.addScore();
-						rect.element.setAttribute('fill', scoreProperties.currentPlayer.configurableProperties.color);
-						rect.element.setAttribute('width', svgLineLength - lineWidth);
-						rect.element.setAttribute('height', svgLineLength - lineWidth);
-						rect.selected = true;
-					}, this);
+					var dotRadius = boardProperties.fn.dotRadius();
+					var lineWidth = 2 * dotRadius;
+					var svgLineLength = boardProperties.fn.svgLineLength(dotRadius);
+	
+					rectArray.forEach(function(rect) { boardProperties.fn.paintRectangle(rect, { lineWidth: lineWidth, svgLineLength: svgLineLength }); });
 				}
 			},
-			create2DArray: function (rows) {
+			create2DArray: function(rows) {
 				var arr = [];
 			
 				for (var i = 0; i < rows; i++) {
@@ -224,6 +234,10 @@ window.LilSquareOfEight = (function LilSquareOfEight() {
 				boardProperties.boardContainer = document.createElement('div');
 				boardProperties.boardContainer.id = 'boardContainer';
 				boardProperties.boardContainer.appendChild(boardProperties.svg);
+
+				if (window.GreatEight) {
+					GreatEight.fn.initialize(boardProperties, scoreProperties);
+				}
 			},
 			reinitialize: function() {
 				if (!boardProperties.boardContainer) {
@@ -243,6 +257,10 @@ window.LilSquareOfEight = (function LilSquareOfEight() {
 				
 				for (var i = 0; i < elementsPerLineCount; i++) {
 					this.createLine(i, elementsPerLineCount, svgLineLength, dotRadius, initialPosition, lineWidth);
+				}
+
+				if (window.GreatEight) {
+					GreatEight.fn.reinitialize();
 				}
 			}
 		}
@@ -440,43 +458,6 @@ window.LilSquareOfEight = (function LilSquareOfEight() {
 		}
 	};
 
-	function copyClipboard() {
-		var input = document.getElementById('urlToShare');
-		input.select();
-		
-		try {
-			var successful = document.execCommand('copy');
-			var msg = successful ? 'successful' : 'unsuccessful';
-			console.log('Copying text command was ' + msg);
-		} catch (err) {
-			console.log('Oops, unable to copy');
-		}
-	};
-	
-	function copyLinkToClipboard(element, event) {
-		event.preventDefault();
-		
-		if (window.clipboardData && window.clipboardData.setData) {
-			// IE specific code path to prevent textarea being shown while dialog is visible.
-			return clipboardData.setData("Text", element.getAttribute('href')); 
-	
-		} else if (document.queryCommandSupported && document.queryCommandSupported("copy")) {
-			var textarea = document.createElement("textarea");
-			textarea.textContent = element.getAttribute('href');
-			textarea.style.position = "fixed";  // Prevent scrolling to bottom of page in MS Edge.
-			document.body.appendChild(textarea);
-			textarea.select();
-			try {
-				return document.execCommand("copy");  // Security exception may be thrown by some browsers.
-			} catch (ex) {
-				console.warn("Copy to clipboard failed.", ex);
-				return false;
-			} finally {
-				document.body.removeChild(textarea);
-			}
-		}
-	};
-
 	return {
 		gameContainer: null,
 		boardSize: boardProperties.matrixSize,
@@ -505,11 +486,6 @@ window.LilSquareOfEight = (function LilSquareOfEight() {
 			this.gameContainer.appendChild(boardProperties.boardContainer);
 
 			document.body.appendChild(this.gameContainer);
-
-			//var st = document.createElement('style');
-			//st.innerText = '#gameContainer{text-align:center}#scoreContainer{display:inline-block}#scoreContainer *{vertical-align:middle;padding:5px 10px}#scoreContainer div{opacity:.5;display:initial}#scoreContainer div.activePlayer{opacity:1;font-weight:700}#scoreContainer div span{width:50px;display:inline-block;color:#fff;font-size:35px;font-weight:700}#pOneScore{background-color:' + scoreProperties.playerOne.color + '}#pTwoScore{background-color:' + scoreProperties.playerTwo.color + '}#boardContainer{margin:35px 0 0}.line{cursor:pointer}.clicked{pointer-events:none}';
-
-			//document.head.appendChild(st);
 
 			styleProperties.fn.initialize();
 		},
