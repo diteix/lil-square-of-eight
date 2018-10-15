@@ -3,21 +3,33 @@
 		<title>Lil Square of Eight</title>
 		<!--<link href="css/style.css" rel="stylesheet" type="text/css" />-->
 		<style type="text/css">
-			#configuration { float: left; text-align: center; }
-			#configuration ol { list-style-type: none; border: 1px solid rgb(197, 197, 197); padding: 0; }
-			#configuration li {margin: 10px 10px; }
-			#configuration label { display: inline-block; width: 150px; }
+			body { width: 100%; height: 100%; background: whitesmoke; }
+			h1 { text-align: center; }
+			#configuration { width: 30%; height: 100%; margin: auto; text-align: center; }
+			#configuration ol { list-style-type: none; border: 1px solid rgb(197, 197, 197); border-radius: 5px; padding: 0;}
+			#configuration li { height: 25px; margin: 10px 10px; }
+			#configuration label { float: left; width: 150px; height: 100%; margin-right: 8px; }
+			#configuration input[type=text] { display: block; border: none; border-radius: 5px; padding: 5px 50px 5px 5px; }
+			#configuration .colorPicker { width: 25px !important; border-radius: 50% !important; padding: 5px !important; }
 			#configuration .button { width: 50%; cursor: pointer; }
 			.wheel { float: left; display: none; }
-			.wheel .button {margin-top: 10px; }
+			.wheel .button { margin-top: 10px; }
+			.button { height: 25px; border-radius: 7px; border: 0.5px gray solid; background: gainsboro; }
 			.visible { display: initial; }
 			.invisible { display: none; }
 			#colorPlayerOne, #colorPlayerTwo { border: none; }
 			.colorPicker { cursor: pointer; }
+			#settings { height: 50px; cursor: pointer; position: absolute; top: 10px; left: 10px; }
 		</style>
 	</head>
 	<body>
-		<div id="configuration">
+		<div id="header">
+			<h1>
+				Praise the great Lil Square Of Eight
+			</h1>
+			<img src="images/settings.ico" id="settings" />
+		</div>
+		<div id="configuration" class="invisible">
 			<div class="wheel">
 				<div id="colorWheelPlayerOne"></div>
 				<input class="button" type="button" value="Ok" />
@@ -31,13 +43,13 @@
 					<label>
 						Nome Player 1
 					</label>
-					<input type="textbox" id="playerOneName" />
+					<input type="text" id="playerOneName" />
 				</li>
 				<li>
 					<label>
 						Cor Player 1
 					</label>
-					<input type="textbox" class="colorPicker" id="colorPlayerOne" />
+					<input type="text" class="colorPicker" id="colorPlayerOne" />
 				</li>
 			</ol>
 			<ol>
@@ -45,13 +57,13 @@
 					<label>
 						Nome Player 2
 					</label>
-					<input type="textbox"  id="playerTwoName" />
+					<input type="text"  id="playerTwoName" />
 				</li>
 				<li>
 					<label>
 						Cor Player 2
 					</label>
-					<input type="textbox" class="colorPicker" id="colorPlayerTwo" />
+					<input type="text" class="colorPicker" id="colorPlayerTwo" />
 				</li>
 			</ol>
 			<ol>
@@ -59,7 +71,7 @@
 					<label>
 						Tamanho do tabuleiro
 					</label>
-					<input type="textbox" id="boardSize" />
+					<input type="text" id="boardSize" />
 				</li>
 			</ol>
 			<ol>
@@ -78,6 +90,11 @@
 			document.getElementById('playerTwoName').value = LilSquareOfEight.playerTwo.name;
 			document.getElementById('boardSize').value = LilSquareOfEight.boardSize;
 
+			document.getElementById('settings').onclick = function() {
+				document.getElementById('configuration').classList.toggle('invisible');
+				document.getElementById('gameContainer').classList.toggle('invisible');
+			};
+
 			var size = 250;
 			var colorWheelPlayerOne = new iro.ColorPicker("#colorWheelPlayerOne", {
 				width: size,
@@ -87,6 +104,7 @@
 				sliderMargin: 5,
 				css: { "#colorPlayerOne": {	"background-color": "$color" } }
 			});
+
 			var colorWheelPlayerTwo = new iro.ColorPicker("#colorWheelPlayerTwo", {
 				width: size,
 				height: size,
@@ -126,6 +144,8 @@
 				LilSquareOfEight.playerTwo.color = window.getComputedStyle(document.getElementById('colorPlayerTwo')).getPropertyValue('background-color');
 
 				LilSquareOfEight.reinitialize(document.getElementById('boardSize').value);
+
+				document.getElementById('settings').click();
 			};
 		</script>
 	</body>

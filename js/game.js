@@ -66,7 +66,7 @@ window.LilSquareOfEight = (function LilSquareOfEight() {
 					element.setAttribute('y', y - lineWidth);
 					element.setAttribute('width', svgLineLength);
 					element.setAttribute('height', lineWidth * 3);
-					element.setAttribute('fill', 'white');
+					element.setAttribute('fill', 'transparent');
 					element.className.baseVal += "line";
 					
 					element.onclick = boardProperties.fn.resolveTurn;
@@ -80,7 +80,7 @@ window.LilSquareOfEight = (function LilSquareOfEight() {
 					element.setAttribute('y', y);
 					element.setAttribute('width', lineWidth * 3);
 					element.setAttribute('height', svgLineLength);
-					element.setAttribute('fill', 'white');
+					element.setAttribute('fill', 'transparent');
 					element.className.baseVal += "line";
 					
 					element.onclick = boardProperties.fn.resolveTurn;
@@ -89,7 +89,7 @@ window.LilSquareOfEight = (function LilSquareOfEight() {
 					element.setAttribute('id', lineIndex  + ':' +  elementIndex);
 					element.setAttribute('x', (dotRadius * (elementIndex + 1))  + (svgLineLength * (elementIndex - 1) / 2) + parseInt(lineWidth / 2));
 					element.setAttribute('y', (dotRadius * (lineIndex + 1))  + (svgLineLength * (lineIndex - 1) / 2) + parseInt(lineWidth / 2));
-					element.setAttribute('fill', 'white');
+					element.setAttribute('fill', 'transparent');
 				}
 				
 				return element;
@@ -351,6 +351,7 @@ window.LilSquareOfEight = (function LilSquareOfEight() {
 
 	var styleDefault = {
 		"#gameContainer": {
+			"width": "100%",
 			"text-align": "center"
 		},
 		"#scoreContainer": {
