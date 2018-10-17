@@ -5,6 +5,7 @@ window.LilSquareOfEight = (function LilSquareOfEight() {
 	var dotRadiusDefault = 3;
 
 	var useAI = false;
+	var difficultyAI;
 	
 	var boardProperties = {
 		boardContainer: null,
@@ -238,7 +239,7 @@ window.LilSquareOfEight = (function LilSquareOfEight() {
 				boardProperties.boardContainer.appendChild(boardProperties.svg);
 
 				if (useAI && window.GreatEight) {
-					GreatEight.fn.initialize(boardProperties, scoreProperties);
+					GreatEight.fn.initialize(boardProperties, scoreProperties, difficultyAI);
 				}
 			},
 			reinitialize: function() {
@@ -262,7 +263,7 @@ window.LilSquareOfEight = (function LilSquareOfEight() {
 				}
 
 				if (useAI && window.GreatEight) {
-					GreatEight.fn.reinitialize(boardProperties, scoreProperties);
+					GreatEight.fn.reinitialize(boardProperties, scoreProperties, difficultyAI);
 				}
 			}
 		}
@@ -467,12 +468,13 @@ window.LilSquareOfEight = (function LilSquareOfEight() {
 		boardLength: boardProperties.boardLength,
 		playerOne: scoreProperties.playerOne.configurableProperties,
 		playerTwo: scoreProperties.playerTwo.configurableProperties,
-		initialize: function(playWithComputer, boardSize, boardLength) {
+		initialize: function(playWithComputer, difficulty, boardSize, boardLength) {
 			if (this.gameContainer) {
-				return this.reinitialize(playWithComputer, boardSize, boardLength);
+				return this.reinitialize(playWithComputer, difficulty, boardSize, boardLength);
 			}
 
-			this.useAI = playWithComputer;
+			useAI = playWithComputer;
+			difficultyAI = difficulty;
 
 			if (boardSize && !isNaN(boardSize)) {
 				boardProperties.matrixSize = parseInt(boardSize);
@@ -494,12 +496,13 @@ window.LilSquareOfEight = (function LilSquareOfEight() {
 
 			styleProperties.fn.initialize();
 		},
-		reinitialize: function(playWithComputer, boardSize, boardLength) {
+		reinitialize: function(playWithComputer, difficulty, boardSize, boardLength) {
 			if (!this.gameContainer) {
-				return this.initialize(playWithComputer, boardSize, boardLength);
+				return this.initialize(playWithComputer, difficulty, boardSize, boardLength);
 			}
 
 			useAI = playWithComputer;
+			difficultyAI = difficulty;
 			
 			if (boardSize && !isNaN(boardSize)) {
 				boardProperties.matrixSize = parseInt(boardSize);

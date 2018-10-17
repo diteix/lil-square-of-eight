@@ -3,7 +3,7 @@
 		<title>Lil Square of Eight</title>
 		<!--<link href="css/style.css" rel="stylesheet" type="text/css" />-->
 		<style type="text/css">
-			body { width: 100%; height: 100%; background: whitesmoke; }
+			body { background: whitesmoke; }
 			h1 { text-align: center; }
 			#configuration { width: 35%; height: 100%; margin: auto; text-align: center; }
 			#configuration ol { list-style-type: none; border: 1px solid rgb(197, 197, 197); border-radius: 5px; padding: 0;}
@@ -80,6 +80,26 @@
 					<input type="checkbox" class="button" id="computer" />
 				</li>
 			</ol>
+			<ol class="invisible" id="difficulty">
+					<li>
+						<label>
+							Fácil
+						</label>
+						<input type="radio" class="button" name="difficulty" value="easy" checked />
+					</li>
+					<li>
+						<label>
+							Normal
+						</label>
+						<input type="radio" class="button" name="difficulty" value="normal" />
+					</li>
+					<li>
+						<label>
+							Difícil
+						</label>
+						<input type="radio" class="button" name="difficulty" value="hard" />
+					</li>
+				</ol>
 			<ol>
 				<li>
 					<input type="button" class="button" id="restartButton" value="Reiniciar" />
@@ -142,6 +162,10 @@
 				};
 			});
 
+			document.getElementById('computer').onclick = function() {
+				document.getElementById('difficulty').classList.toggle('invisible');
+			};
+
 			document.getElementById('restartButton').onclick = function() {
 				LilSquareOfEight.playerOne.name = document.getElementById('playerOneName').value;
 				LilSquareOfEight.playerOne.color = window.getComputedStyle(document.getElementById('colorPlayerOne')).getPropertyValue('background-color');
@@ -149,7 +173,10 @@
 				LilSquareOfEight.playerTwo.name = document.getElementById('playerTwoName').value;
 				LilSquareOfEight.playerTwo.color = window.getComputedStyle(document.getElementById('colorPlayerTwo')).getPropertyValue('background-color');
 
-				LilSquareOfEight.reinitialize(document.getElementById("computer").checked, document.getElementById('boardSize').value);
+				LilSquareOfEight.reinitialize(
+					document.getElementById("computer").checked, 
+					document.querySelector('input[name=difficulty]:checked').value, 
+					document.getElementById('boardSize').value);
 
 				document.getElementById('settings').click();
 			};
