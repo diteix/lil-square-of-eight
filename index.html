@@ -21,13 +21,13 @@
 			</div>
 			<ol>
 				<li>
-					<label>
+					<label for="playerOneName">
 						Nome Player 1
 					</label>
 					<input type="text" id="playerOneName" />
 				</li>
 				<li>
-					<label>
+					<label for="colorPlayerOne">
 						Cor Player 1
 					</label>
 					<input type="text" class="colorPicker" id="colorPlayerOne" />
@@ -35,13 +35,13 @@
 			</ol>
 			<ol>
 				<li>
-					<label>
+					<label for="playerTwoName">
 						Nome Player 2
 					</label>
 					<input type="text"  id="playerTwoName" />
 				</li>
 				<li>
-					<label>
+					<label for="colorPlayerTwo">
 						Cor Player 2
 					</label>
 					<input type="text" class="colorPicker" id="colorPlayerTwo" />
@@ -49,13 +49,13 @@
 			</ol>
 			<ol>
 				<li>
-					<label>
+					<label for="boardSize">
 						Tamanho do tabuleiro
 					</label>
 					<input type="text" id="boardSize" />
 				</li>
 				<li>
-					<label>
+					<label for="computer">
 						Jogar contra computador
 					</label>
 					<input type="checkbox" class="button" id="computer" />
@@ -63,22 +63,22 @@
 			</ol>
 			<ol class="invisible" id="difficulty">
 					<li>
-						<label>
+						<label for="difficultyEasy">
 							Fácil
 						</label>
-						<input type="radio" class="button" name="difficulty" value="easy" checked />
+						<input type="radio" class="button" name="difficulty" value="easy" id="difficultyEasy" checked />
 					</li>
 					<li>
-						<label>
+						<label for="difficultyNormal">
 							Normal
 						</label>
-						<input type="radio" class="button" name="difficulty" value="normal" />
+						<input type="radio" class="button" name="difficulty" value="normal" id="difficultyNormal" />
 					</li>
 					<li>
-						<label>
+						<label for="difficultyHard">
 							Difícil
 						</label>
-						<input type="radio" class="button" name="difficulty" value="hard" />
+						<input type="radio" class="button" name="difficulty" value="hard" id="difficultyHard" />
 					</li>
 				</ol>
 			<ol>
@@ -150,13 +150,6 @@
 				document.getElementById('playerTwoName').disabled = isDisabled;
 				document.getElementById('playerTwoName').value = isDisabled ? "Computer" : "Player 2";
 			};
-
-			var difficulties = document.querySelectorAll('#difficulty label');
-			difficulties.forEach(difficulty => {
-				difficulty.addEventListener('click', function (e) {
-					e.target.parentElement.querySelector('input').checked = true;
-				});
-			});
 
 			document.getElementById('restartButton').onclick = function() {
 				LilSquareOfEight.playerOne.name = document.getElementById('playerOneName').value;
