@@ -2,6 +2,7 @@
 	<head>
 		<title>Lil Square of Eight</title>
 		<link href="css/style.css" rel="stylesheet" type="text/css" />
+		<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
 	</head>
 	<body>
 		<div id="header">
@@ -12,80 +13,92 @@
 		</div>
 		<div id="configuration" class="invisible">
 			<div class="wheel">
+				<h3>Cor do Player 1</h3>
 				<div id="colorWheelPlayerOne"></div>
 				<input class="button" type="button" value="Ok" />
 			</div>
 			<div class="wheel">
+				<h3>Cor do Player 2</h3>
 				<div id="colorWheelPlayerTwo"></div>
 				<input class="button" type="button" value="Ok" />
 			</div>
-			<ol>
-				<li>
-					<label for="playerOneName">
-						Nome Player 1
-					</label>
-					<input type="text" id="playerOneName" />
-				</li>
-				<li>
-					<label for="colorPlayerOne">
-						Cor Player 1
-					</label>
-					<input type="text" class="colorPicker" id="colorPlayerOne" />
-				</li>
-			</ol>
-			<ol>
-				<li>
-					<label for="playerTwoName">
-						Nome Player 2
-					</label>
-					<input type="text"  id="playerTwoName" />
-				</li>
-				<li>
-					<label for="colorPlayerTwo">
-						Cor Player 2
-					</label>
-					<input type="text" class="colorPicker" id="colorPlayerTwo" />
-				</li>
-			</ol>
-			<ol>
-				<li>
-					<label for="boardSize">
-						Tamanho do tabuleiro
-					</label>
-					<input type="text" id="boardSize" />
-				</li>
-				<li>
-					<label for="computer">
-						Jogar contra computador
-					</label>
-					<input type="checkbox" class="button" id="computer" />
-				</li>
-			</ol>
-			<ol class="invisible" id="difficulty">
-					<li>
+
+			<div class="content">
+				<div>
+					<h3>Player 1</h3>
+					<p>
+						<label for="playerOneName">
+							Nome
+						</label>
+						<input type="text" id="playerOneName" />
+					</p>
+					<p>
+						<label for="colorPlayerOne">
+							Cor
+						</label>
+						<input type="text" class="colorPicker" id="colorPlayerOne" />
+					</p>
+				</div>	
+
+				<div>
+					<h3>Player 2</h3>
+					<p>
+						<label for="playerTwoName">
+							Nome
+						</label>
+						<input type="text"  id="playerTwoName" /></p>
+					<p>
+						<label for="colorPlayerTwo">
+							Cor
+						</label>
+						<input type="text" class="colorPicker" id="colorPlayerTwo" />
+					</p>
+				</div>
+
+				<div>
+					<h3>
+						Configurações
+					</h3>
+					<p>
+						<label for="boardSize">
+							Tamanho do tabuleiro
+						</label>
+						<input type="text" id="boardSize" />
+					</p>
+					<p>
+						<label for="computer">
+							Jogar contra computador
+						</label>
+						<input type="checkbox" id="computer" />
+					</p>
+				</div>
+			
+				<div class="invisible" id="difficulty">
+					<h3>Nível de dificuldade</h3>
+					<p>
+						<input type="radio" name="difficulty" value="easy" id="difficultyEasy" checked />
 						<label for="difficultyEasy">
 							Fácil
 						</label>
-						<input type="radio" class="button" name="difficulty" value="easy" id="difficultyEasy" checked />
-					</li>
-					<li>
+					</p>
+					<p>
+						<input type="radio" name="difficulty" value="normal" id="difficultyNormal" />
 						<label for="difficultyNormal">
 							Normal
 						</label>
-						<input type="radio" class="button" name="difficulty" value="normal" id="difficultyNormal" />
-					</li>
-					<li>
+					</p>
+					<p>
+						<input type="radio" name="difficulty" value="hard" id="difficultyHard" />
 						<label for="difficultyHard">
 							Difícil
 						</label>
-						<input type="radio" class="button" name="difficulty" value="hard" id="difficultyHard" />
-					</li>
-				</ol>
-			<ol>
-				<li>
+					</p>
+				</div>
+
+				<div class="button-content">
 					<input type="button" class="button" id="restartButton" value="Reiniciar" />
-				</li>
-			</ol>
+				</div>
+			</div>
 		</div>
 		<script src="js/game.js" type="text/javascript"></script>
 		<script src="js/ai.js" type="text/javascript"></script>
@@ -123,23 +136,17 @@
 
 			document.getElementById('colorPlayerOne').onclick = function() { 
 				document.getElementById('colorWheelPlayerOne').parentElement.classList.add('visible');
-				document.querySelectorAll('#configuration ol').forEach(function(element) {
-					element.classList.add('invisible');
-				});
+				document.querySelector('#configuration .content').classList.toggle('invisible');
 			};
 			document.getElementById('colorPlayerTwo').onclick = function() { 
 				document.getElementById('colorWheelPlayerTwo').parentElement.classList.add('visible');
-				document.querySelectorAll('#configuration ol').forEach(function(element) {
-					element.classList.add('invisible');
-				});
+				document.querySelector('#configuration .content').classList.toggle('invisible');
 			};
 
 			document.querySelectorAll('.wheel .button').forEach(function(element) {
 				element.onclick = function() {
 					this.parentElement.classList.remove('visible');
-					document.querySelectorAll('#configuration ol').forEach(function(element) {
-						element.classList.remove('invisible');
-					});
+					document.querySelector('#configuration .content').classList.toggle('invisible');
 				};
 			});
 
@@ -147,8 +154,8 @@
 				document.getElementById('difficulty').classList.toggle('invisible');
 
 				var isDisabled = !document.getElementById('playerTwoName').disabled;
-				document.getElementById('playerTwoName').disabled = isDisabled;
-				document.getElementById('playerTwoName').value = isDisabled ? "Computer" : "Player 2";
+
+				document.getElementById('playerTwoName').value = document.getElementById('computer').checked ? "Computer" : "Player 2";
 			};
 
 			document.getElementById('restartButton').onclick = function() {
