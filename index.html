@@ -145,6 +145,10 @@
 
 			document.getElementById('computer').onclick = function() {
 				document.getElementById('difficulty').classList.toggle('invisible');
+
+				var isDisabled = !document.getElementById('playerTwoName').disabled;
+				document.getElementById('playerTwoName').disabled = isDisabled;
+				document.getElementById('playerTwoName').value = isDisabled ? "Computer" : "Player 2";
 			};
 
 			document.getElementById('restartButton').onclick = function() {
