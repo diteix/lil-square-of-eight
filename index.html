@@ -151,6 +151,13 @@
 				document.getElementById('playerTwoName').value = isDisabled ? "Computer" : "Player 2";
 			};
 
+			var difficulties = document.querySelectorAll('#difficulty label');
+			difficulties.forEach(difficulty => {
+				difficulty.addEventListener('click', function (e) {
+					e.target.parentElement.querySelector('input').checked = true;
+				});
+			});
+
 			document.getElementById('restartButton').onclick = function() {
 				LilSquareOfEight.playerOne.name = document.getElementById('playerOneName').value;
 				LilSquareOfEight.playerOne.color = window.getComputedStyle(document.getElementById('colorPlayerOne')).getPropertyValue('background-color');

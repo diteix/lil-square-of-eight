@@ -90,3 +90,7 @@ h1 {
     top: 10px;
     left: 10px;
 }
+
+#difficulty label {
+    cursor: pointer;
+}
