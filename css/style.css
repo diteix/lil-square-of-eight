@@ -24,8 +24,8 @@ body { background: whitesmoke; font-family: 'Roboto', sans-serif; }
 #configuration { width: 35%; height: 100%; margin: auto; text-align: center; }
 #configuration .colorPicker { width: 25px !important; border-radius: 50% !important; padding: 5px !important; }
 #configuration .button { border-radius: 7px; border: 0.5px gray solid; background: gainsboro; width: 100%; font-family: 'Roboto', sans-serif; font-size: 20px; padding: 5px;}
-.content div { border: 1px solid rgb(197, 197, 197); border-radius: 5px; padding: 10px; margin-bottom: 20px; }
-.content div h3 { background: whitesmoke; margin: -10px 0px 0px 0px; transform: translateY(-50%); width: fit-content; padding: 2px; font-size: 15px; }
+.content div { border: 1px solid rgb(197, 197, 197); border-radius: 5px; padding: 10px; margin-bottom: 20px; text-align: left; }
+.content div h3 { background: whitesmoke; margin: -10px 0px 0px 0px; transform: translateY(-50%); display: inline-block; padding: 2px; font-size: 15px; }
 .content div p { width: 100%; text-align: left; margin: 5px; padding: 3px 0px; }
 .content div p * { display: inline-block; vertical-align: middle; }
 .content div p input[type="text"] { height: 25px; width: 45%; }
