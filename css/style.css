@@ -17,7 +17,7 @@ body { background: whitesmoke; font-family: 'Roboto', sans-serif; }
 .header #settings { cursor: pointer; width: 3%; }
 .header .title { width: max-content; width: 96%;  }
 .header h1 { text-align: center; margin: 0px; padding-right: 3%; }
-.header { margin-bottom: 20px;}
+.header { margin-bottom: 30px;}
 
 /* Configuration page */
 #configuration .content { border: none; }
