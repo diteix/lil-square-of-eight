@@ -2,12 +2,14 @@
 body { background: whitesmoke; font-family: 'Roboto', sans-serif; }
 
 /* Function classes */
-.visible { display: initial; }
 .invisible { display: none; }
 
 /* Color picker */
-.wheel { float: left; display: none; }
+.wheel { width: 250px; margin: auto; }
+.wheel p { font-weight: bold; font-size: 20px; }
 .wheel .button { margin-top: 10px; }
+.wheel div { margin: auto; }
+.wheel div svg { display: inline !important; }
 
 /* Header */
 .header div {display: inline-block; vertical-align: middle; }

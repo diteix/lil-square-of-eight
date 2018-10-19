@@ -17,15 +17,15 @@
 			</div>
 		</div>
 		<div id="configuration" class="invisible">
-			<div class="wheel">
-				<h3>Cor do Player 1</h3>
+			<div class="wheel invisible">
+				<p>Cor <span id="colorWheelPlayerOneName"></span></p>
 				<div id="colorWheelPlayerOne"></div>
-				<input class="button" type="button" value="Ok" />
+				<input class="button" type="button" value="OK" />
 			</div>
-			<div class="wheel">
-				<h3>Cor do Player 2</h3>
+			<div class="wheel invisible">
+				<p>Cor <span id="colorWheelPlayerTwoName"></span></p>
 				<div id="colorWheelPlayerTwo"></div>
-				<input class="button" type="button" value="Ok" />
+				<input class="button" type="button" value="OK" />
 			</div>
 
 			<div class="content">
@@ -143,17 +143,19 @@
 			});
 
 			document.getElementById('colorPlayerOne').onclick = function() { 
-				document.getElementById('colorWheelPlayerOne').parentElement.classList.add('visible');
+				document.getElementById('colorWheelPlayerOneName').textContent = document.getElementById('playerOneName').value;
+				document.getElementById('colorWheelPlayerOne').parentElement.classList.toggle('invisible');
 				document.querySelector('#configuration .content').classList.toggle('invisible');
 			};
 			document.getElementById('colorPlayerTwo').onclick = function() { 
-				document.getElementById('colorWheelPlayerTwo').parentElement.classList.add('visible');
+				document.getElementById('colorWheelPlayerTwoName').textContent = document.getElementById('playerTwoName').value;
+				document.getElementById('colorWheelPlayerTwo').parentElement.classList.toggle('invisible');
 				document.querySelector('#configuration .content').classList.toggle('invisible');
 			};
 
 			document.querySelectorAll('.wheel .button').forEach(function(element) {
 				element.onclick = function() {
-					this.parentElement.classList.remove('visible');
+					this.parentElement.classList.toggle('invisible');
 					document.querySelector('#configuration .content').classList.toggle('invisible');
 				};
 			});
