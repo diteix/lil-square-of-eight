@@ -37,3 +37,6 @@ body { background: whitesmoke; font-family: 'Roboto', sans-serif; }
 #colorPlayerOne, #colorPlayerTwo { border: none; }
 .colorPicker { cursor: pointer; }
 #difficulty label { cursor: pointer; }
+
+/* Game page */
+#pOne label, #pTwo label { font-size: 30px; }
