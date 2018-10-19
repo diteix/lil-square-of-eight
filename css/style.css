@@ -1,13 +1,23 @@
+/* General */
 body { background: whitesmoke; font-family: 'Roboto', sans-serif; }
-h1 { text-align: center; }
-.wheel { float: left; display: none; }
-.wheel .button { margin-top: 10px; }
+
+/* Function classes */
 .visible { display: initial; }
 .invisible { display: none; }
-#colorPlayerOne, #colorPlayerTwo { border: none; }
-.colorPicker { cursor: pointer; }
-#settings { height: 36px; cursor: pointer; position: absolute; top: 10px; left: 10px; }
-#difficulty label { cursor: pointer; }
+
+/* Color picker */
+.wheel { float: left; display: none; }
+.wheel .button { margin-top: 10px; }
+
+/* Header */
+.header div {display: inline-block; vertical-align: middle; }
+.header img { height: 36px; }
+.header #settings { cursor: pointer; width: 3%; }
+.header .title { width: max-content; width: 96%;  }
+.header h1 { text-align: center; margin: 0px; padding-right: 3%; }
+.header { margin-bottom: 20px;}
+
+/* Configuration page */
 #configuration .content { border: none; }
 #configuration { width: 35%; height: 100%; margin: auto; text-align: center; }
 #configuration .colorPicker { width: 25px !important; border-radius: 50% !important; padding: 5px !important; }
@@ -19,5 +29,9 @@ h1 { text-align: center; }
 .content div p input[type="text"] { height: 25px; width: 45%; }
 .content div p input[type="radio"], .content div p input[type="checkbox"] { height: 25px; width: 25px;  }
 .content div p input[type="checkbox"]  { margin: 0px; }
+.content div p input[type="radio"] { margin-right: 15px; }
 .content div p label { width: 41%;  }
 .content .button-content { border:none; }
+#colorPlayerOne, #colorPlayerTwo { border: none; }
+.colorPicker { cursor: pointer; }
+#difficulty label { cursor: pointer; }

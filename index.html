@@ -5,11 +5,16 @@
 		<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
 	</head>
 	<body>
-		<div id="header">
-			<h1>
-				Praise the great Lil Square Of Eight
-			</h1>
-			<img src="images/settings.ico" id="settings" alt="settings" title="settings" />
+		<div class="header">
+			<div id="settings">
+				<img src="images/settings.png"  alt="settings" title="Settings" />
+				<img src="images/close.png" alt="close" title="Close" class="invisible" />
+			</div>
+			<div class="title">
+				<h1>
+					Praise the great Lil Square Of Eight
+				</h1>
+			</div>
 		</div>
 		<div id="configuration" class="invisible">
 			<div class="wheel">
@@ -110,9 +115,12 @@
 			document.getElementById('playerTwoName').value = LilSquareOfEight.playerTwo.name;
 			document.getElementById('boardSize').value = LilSquareOfEight.boardSize;
 
-			document.getElementById('settings').onclick = function() {
+			document.getElementById('settings').onclick = function(e) {
 				document.getElementById('configuration').classList.toggle('invisible');
 				document.getElementById('gameContainer').classList.toggle('invisible');
+				document.querySelectorAll('#settings img').forEach((element) => {
+					element.classList.toggle('invisible');
+				});
 			};
 
 			var size = 250;
