@@ -28,7 +28,7 @@ body { background: whitesmoke; font-family: 'Roboto', sans-serif; }
 .content div h3 { background: whitesmoke; margin: -10px 0px 0px 0px; transform: translateY(-50%); display: inline-block; padding: 2px; font-size: 15px; }
 .content div p { width: 100%; text-align: left; margin: 5px; padding: 3px 0px; }
 .content div p * { display: inline-block; vertical-align: middle; }
-.content div p input[type="text"] { height: 25px; width: 45%; }
+.content div p input[type="text"] { height: 25px; width: 45%; border-radius: 5px; border: 0; }
 .content div p input[type="radio"], .content div p input[type="checkbox"] { height: 25px; width: 25px;  }
 .content div p input[type="checkbox"]  { margin: 0px; }
 .content div p input[type="radio"] { margin-right: 15px; }
