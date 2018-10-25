@@ -1,11 +1,43 @@
-#gameContainer { text-align: center; }
-#scoreContainer { display: inline-block; }
-#scoreContainer * { vertical-align: middle; padding: 5px 10px; }
-#scoreContainer div { opacity: 0.5; display: initial; }
-#scoreContainer div.activePlayer { opacity: 1; font-weight: bold; }
-#scoreContainer div span { width: 50px; display: inline-block; color: white; font-size: 35px; font-weight: bold; }
-#pOneScore { background-color: blue; }
-#pTwoScore { background-color: red; }
-#boardContainer { margin: 35px 0 0; }
-line { cursor: pointer; }
-.clicked { pointer-events : none; }
+/* General */
+body { background: whitesmoke; font-family: 'Roboto', sans-serif; }
+
+/* Function classes */
+.invisible { display: none; }
+
+/* Color picker */
+.wheel { width: 250px; margin: auto; }
+.wheel p { font-weight: bold; font-size: 20px; }
+.wheel .button { margin-top: 10px; }
+.wheel div { margin: auto; }
+.wheel div svg { display: inline !important; }
+
+/* Header */
+.header div {display: inline-block; vertical-align: middle; }
+.header img { height: 36px; }
+.header #settings { cursor: pointer; width: 3%; }
+.header .title { width: max-content; width: 96%;  }
+.header h1 { text-align: center; margin: 0px; padding-right: 3%; }
+.header { margin-bottom: 30px;}
+
+/* Configuration page */
+#configuration .content { border: none; }
+#configuration { width: 35%; height: 100%; margin: auto; text-align: center; }
+#configuration .colorPicker { width: 25px !important; border-radius: 50% !important; padding: 5px !important; }
+#configuration .button { border-radius: 7px; border: 0.5px gray solid; background: gainsboro; width: 100%; font-family: 'Roboto', sans-serif; font-size: 20px; padding: 5px;}
+.content div { border: 1px solid rgb(197, 197, 197); border-radius: 5px; padding: 10px; margin-bottom: 20px; text-align: left; }
+.content div h3 { background: whitesmoke; margin: -10px 0px 0px 0px; transform: translateY(-50%); display: inline-block; padding: 2px; font-size: 15px; }
+.content div p { width: 100%; text-align: left; margin: 5px; padding: 3px 0px; }
+.content div p * { display: inline-block; vertical-align: middle; }
+.content div p input[type="text"] { height: 25px; width: 45%; }
+.content div p input[type="radio"], .content div p input[type="checkbox"] { height: 25px; width: 25px;  }
+.content div p input[type="checkbox"]  { margin: 0px; }
+.content div p input[type="radio"] { margin-right: 15px; }
+.content div p label { width: 41%;  }
+.content .button-content { border:none; }
+#colorPlayerOne, #colorPlayerTwo { border: none; }
+.colorPicker { cursor: pointer; }
+#difficulty label { cursor: pointer; }
+
+/* Game page */
+#pOne label, #pTwo label { font-size: 30px; }
+#gameContainer { padding-bottom: 20px; }
