@@ -496,26 +496,61 @@ window.LilSquareOfEight = (function LilSquareOfEight() {
 
 			styleProperties.fn.initialize();
 		},
-		reinitialize: function(playWithComputer, difficulty, boardSize, boardLength) {
-			if (!this.gameContainer) {
-				return this.initialize(playWithComputer, difficulty, boardSize, boardLength);
-			}
+		reinitialize: function(playWithComputer, difficulty, boardSize, boardLength, iterations) {
+			if (iterations) {
+				console.log('started training...');
 
-			useAI = playWithComputer;
-			difficultyAI = difficulty;
-			
-			if (boardSize && !isNaN(boardSize)) {
-				boardProperties.matrixSize = parseInt(boardSize);
-			}
+				for (let i = 0; i < iterations; i++) {
+					if (!this.gameContainer) {
+						return this.initialize(playWithComputer, difficulty, boardSize, boardLength);
+					}
+		
+					useAI = playWithComputer;
+					difficultyAI = difficulty;
+					
+					if (boardSize && !isNaN(boardSize)) {
+						boardProperties.matrixSize = parseInt(boardSize);
+					}
+		
+					if (boardLength && !isNaN(boardLength)) {
+						boardProperties.boardLength = parseInt(boardLength);
+					}
+					
+					scoreProperties.fn.reinitialize();
+					boardProperties.fn.reinitialize();
+		
+					styleProperties.fn.reinitialize();
 
-			if (boardLength && !isNaN(boardLength)) {
-				boardProperties.boardLength = parseInt(boardLength);
-			}
-			
-			scoreProperties.fn.reinitialize();
-			boardProperties.fn.reinitialize();
+					let iterationFinish = false;
+					console.log('	iteration ' + i);
+					
+					while (!iterationFinish) {
+						if (scoreProperties.playerOne == scoreProperties.currentPlayer) {
+							GreatEight.ml.fn.play();
+						}
 
-			styleProperties.fn.reinitialize();
+						if (scoreProperties.playerOne.score + scoreProperties.playerTwo.score == Math.pow(boardProperties.matrixSize, 2)) {
+							GreatEight.ml.fn.rewardBack(
+								scoreProperties.playerOne.score > scoreProperties.playerTwo.score ?
+								1 :
+								scoreProperties.playerOne.score == scoreProperties.playerTwo.score ?
+								0 : -1
+							);
+							GreatEight.ml.fn.addLearning();
+
+							iterationFinish = true;
+						}
+					}
+
+					
+				}
+
+				console.log('training done!');
+			}
 		}
 	};
 })();
+
+const train = (iterations) => {
+	
+};
